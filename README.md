@@ -1,1 +1,0 @@
-# EF6_DBfirstOracle_poc

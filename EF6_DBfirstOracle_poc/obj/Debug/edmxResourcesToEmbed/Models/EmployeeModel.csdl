@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EmployeeModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="DEPARTMENT">
+    <Key>
+      <PropertyRef Name="DEPARTMENT_ID" />
+    </Key>
+    <Property Name="DEPARTMENT_ID" Type="Int16" Nullable="false" />
+    <Property Name="DEPARTMENT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="MANAGER_ID" Type="Int32" />
+    <Property Name="LOCATION_ID" Type="Int16" />
+    <NavigationProperty Name="EMPLOYEE" Relationship="Self.DEPT_MGR_FK" FromRole="DEPARTMENTS" ToRole="EMPLOYEES" />
+    <NavigationProperty Name="EMPLOYEES" Relationship="Self.EMP_DEPT_FK" FromRole="DEPARTMENTS" ToRole="EMPLOYEES" />
+  </EntityType>
+  <EntityType Name="EMPLOYEE">
+    <Key>
+      <PropertyRef Name="EMPLOYEE_ID" />
+    </Key>
+    <Property Name="EMPLOYEE_ID" Type="Int32" Nullable="false" />
+    <Property Name="FIRST_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="LAST_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="EMAIL" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="PHONE_NUMBER" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="HIRE_DATE" Type="DateTime" Nullable="false" />
+    <Property Name="JOB_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="SALARY" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="COMMISSION_PCT" Type="Decimal" Precision="2" Scale="2" />
+    <Property Name="MANAGER_ID" Type="Int32" />
+    <Property Name="DEPARTMENT_ID" Type="Int16" />
+    <NavigationProperty Name="DEPARTMENTS" Relationship="Self.DEPT_MGR_FK" FromRole="EMPLOYEES" ToRole="DEPARTMENTS" />
+    <NavigationProperty Name="DEPARTMENT" Relationship="Self.EMP_DEPT_FK" FromRole="EMPLOYEES" ToRole="DEPARTMENTS" />
+    <NavigationProperty Name="EMPLOYEES1" Relationship="Self.EMP_MANAGER_FK" FromRole="EMPLOYEES" ToRole="EMPLOYEES1" />
+    <NavigationProperty Name="EMPLOYEE1" Relationship="Self.EMP_MANAGER_FK" FromRole="EMPLOYEES1" ToRole="EMPLOYEES" />
+  </EntityType>
+  <Association Name="DEPT_MGR_FK">
+    <End Role="EMPLOYEES" Type="Self.EMPLOYEE" Multiplicity="0..1" />
+    <End Role="DEPARTMENTS" Type="Self.DEPARTMENT" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EMPLOYEES">
+        <PropertyRef Name="EMPLOYEE_ID" />
+      </Principal>
+      <Dependent Role="DEPARTMENTS">
+        <PropertyRef Name="MANAGER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="EMP_DEPT_FK">
+    <End Role="DEPARTMENTS" Type="Self.DEPARTMENT" Multiplicity="0..1" />
+    <End Role="EMPLOYEES" Type="Self.EMPLOYEE" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DEPARTMENTS">
+        <PropertyRef Name="DEPARTMENT_ID" />
+      </Principal>
+      <Dependent Role="EMPLOYEES">
+        <PropertyRef Name="DEPARTMENT_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="EMP_MANAGER_FK">
+    <End Role="EMPLOYEES" Type="Self.EMPLOYEE" Multiplicity="0..1" />
+    <End Role="EMPLOYEES1" Type="Self.EMPLOYEE" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EMPLOYEES">
+        <PropertyRef Name="EMPLOYEE_ID" />
+      </Principal>
+      <Dependent Role="EMPLOYEES1">
+        <PropertyRef Name="MANAGER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="DEPARTMENTS" EntityType="Self.DEPARTMENT" />
+    <EntitySet Name="EMPLOYEES" EntityType="Self.EMPLOYEE" />
+    <AssociationSet Name="DEPT_MGR_FK" Association="Self.DEPT_MGR_FK">
+      <End Role="EMPLOYEES" EntitySet="EMPLOYEES" />
+      <End Role="DEPARTMENTS" EntitySet="DEPARTMENTS" />
+    </AssociationSet>
+    <AssociationSet Name="EMP_DEPT_FK" Association="Self.EMP_DEPT_FK">
+      <End Role="DEPARTMENTS" EntitySet="DEPARTMENTS" />
+      <End Role="EMPLOYEES" EntitySet="EMPLOYEES" />
+    </AssociationSet>
+    <AssociationSet Name="EMP_MANAGER_FK" Association="Self.EMP_MANAGER_FK">
+      <End Role="EMPLOYEES" EntitySet="EMPLOYEES" />
+      <End Role="EMPLOYEES1" EntitySet="EMPLOYEES" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
